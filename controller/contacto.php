@@ -24,5 +24,33 @@
             echo json_encode($results);
             
             break;
+
+        case "guardaryeditar":
+            $datos=$contacto->get_contacto_x_id($_POST["id"]);
+            if(empty($_POST["id"])){
+                if(is_array($datos)==true and count($datos)==0){
+                    $contacto->insert_contacto($_POST["nombres"]);
+                }
+
+            }else{
+                $contacto->update_contacto($_POST["id"],$_POST["nombres"]);
+            }
+            break;
+
+        case "mostrar";
+            $datos=$contacto->get_contacto_x_id($_POST["id"]);
+            if(is_array($datos)==true and count($datos)>0){
+                foreach($datos as $row){
+                    $output["id"] = $row["id"];
+                    $output["nombres"] = $row["nombres"];
+                }
+            }
+
+            break;
+
+        case "eliminar":
+            $contacto->delete_contacto($_POST["id"]);
+            break;
     }
+
 ?>

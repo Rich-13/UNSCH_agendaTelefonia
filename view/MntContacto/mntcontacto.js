@@ -1,6 +1,9 @@
 var tabla;
 
 function init(){
+    $("#contacto_form").on("submit",function(e){
+        guardaryeditar(e);
+    });
 
 }
 $(document).ready(function(){
@@ -57,5 +60,65 @@ $(document).ready(function(){
     }).DataTable();
 });
 
+function guardaryeditar(e){
+    e.preventDefault();
+    var formData = new FormData($("#contacto_form")[0]);
 
+    $.ajax({
+        url: "../../controller/contacto.php?op=guardaryeditar",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(datos){
+            console.log(datos);
+            $('#contacto_form')[0].reset();
+            $("#modalmantenimiento").modal('hide');
+            $('#contacto_data').DataTable().ajax.reload();
+
+            swal.fire(
+                'Registro!',
+                'Se registro correctamente.',
+                'success'
+            )
+        }
+    });
+
+}
+
+function editar(id){
+    console.log(id)
+
+}
+
+function eliminar(id){
+    swal.fire({
+        title: 'Agenda',
+        text: "¿Desea Eliminar el Contacto?",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post("../../controller/contacto.php?op=eliminar", {id:id},function (data){
+
+            });
+            $('#contacto_data').DataTable().ajax.reload();
+
+            swal.fire(
+                'Eliminado!',
+                'El registro se eliminó correctamente.',
+                'success'
+            )
+        }
+    })
+
+}
+
+$(document).on("click","#btnnuevo",function(){
+    $('#mdltitulo').html('Nuevo Registro');
+    $('#modalmantenimiento').modal('show');
+});
 init();
